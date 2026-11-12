@@ -31,9 +31,11 @@ function EnableMessages() {
                 win.webContents.send('new-message-received', msg);
                 
                 const saved = store.get('SavedAccount');
-                const currentUsername = saved ? saved.username : '';
+                // Исправляем поле на то, которое реально сохраняется в store (например, displayname)
+                const currentName = saved ? (saved.displayname || saved.username) : '';
 
-                if (msg.author != currentUsername) {
+                // Сравниваем автора сообщения с вашим реальным именем
+                if (msg.author !== currentName) {
                     currentNotification = new Notification({
                         title: `${msg.author}`,
                         body: msg.text,

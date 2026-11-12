@@ -22,11 +22,21 @@ function autoResizeTextArea(element) {
 
 let activeContextMenu = null;
 
-// Закрытие контекстного меню при клике в любое место
-document.addEventListener('click', () => {
-    if (activeContextMenu) {
-        activeContextMenu.remove();
-        activeContextMenu = null;
+// Плавное закрытие активного меню
+function closeActiveMenu() {
+    if (!activeContextMenu) return;
+    const menu = activeContextMenu;
+    activeContextMenu = null;
+    menu.classList.add('closing');
+    setTimeout(() => {
+        menu.remove();
+    }, 120); // Время должно совпадать с длительностью анимации menuOut в CSS
+}
+
+// Закрытие при клике в любое место
+document.addEventListener('click', (e) => {
+    if (activeContextMenu && !activeContextMenu.contains(e.target)) {
+        closeActiveMenu();
     }
 });
 
@@ -48,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Делегирование правого клика (работает для всех сообщений: старых и новых)
+    // Делегирование правого клика
     document.addEventListener('contextmenu', (e) => {
         const messageEl = e.target.closest('.msg-my, .msg-other');
         if (!messageEl) return;
@@ -56,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
 
         if (activeContextMenu) {
-            activeContextMenu.remove();
+            closeActiveMenu();
         }
 
         const uuid = messageEl.getAttribute('data-uuid');
@@ -86,8 +96,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         menu.style.top = `${e.pageY}px`;
         menu.style.left = `${e.pageX}px`;
-        menu.style.display = 'flex';
 
+        // Обработка кнопки "Ответить"
         menu.querySelector('.reply-action').addEventListener('click', () => {
             currentReplyUuid = uuid;
             
@@ -98,8 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             if (input) input.focus();
-            menu.remove();
-            activeContextMenu = null;
+            closeActiveMenu();
         });
 
         document.body.appendChild(menu);
@@ -173,11 +182,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             scrollToBottom();
         }
 
-        try {
-            const audio = new Audio('../Assets/notification.mp3');
-            audio.volume = 0.4;
-            audio.play().catch((e) => {console.log(`Ошибка воспроизведения звука: ${e}`)});
-        } catch (e) {console.log(`Критическая ошибка воспроизведения звука: ${e}`)}
+        const audio = new Audio('../Assets/Sounds/notification.mp3');
+        audio.volume = 0.4;
+        audio.play().catch((e) => {console.log(`Ошибка воспроизведения звука: ${e}`)});
 
         if (!isWindowFocused) {
             unreadCount++;
