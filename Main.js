@@ -406,37 +406,48 @@ function PlayNotification() {
 }
 
 // Проверка обновлений каждые 30 секунд легковесным способом (через raw package.json на GitHub)
+// Проверка обновлений через GitHub API с дешифрацией Base64 и защитой от кэша
 function startUpdateChecker() {
     let updateNotified = false; // Флаг, чтобы не спамить уведомлением каждые 5 секунд
 
     setInterval(async () => {
-        // Если уже уведомили пользователя, повторно не проверяем до перезапуска
         if (updateNotified) return;
 
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 15000);
 
+            // Уникальный параметр для обхода кэша API
             const timestamp = Date.now();
-            const updateUrl = `https://cdn.jsdelivr.net/gh/Nothing-Byte228/TapoChat@main/package.json?v=${timestamp}`;
+            const apiUrl = `https://api.github.com/repos/Nothing-Byte228/TapoChat/contents/package.json?v=${timestamp}`;
 
-            const response = await fetch(updateUrl, {
+            const response = await fetch(apiUrl, {
+                headers: {
+                    'User-Agent': 'TapoChat-App', // GitHub API требует User-Agent для запросов
+                    'Accept': 'application/vnd.github.v3+json'
+                },
                 signal: controller.signal
             });
             
             clearTimeout(timeoutId);
 
             if (!response.ok) return;
-            const remotePkg = await response.json();
+            const apiData = await response.json();
             
-            const localPkgPath = path.join(DirName, 'package.json');
-            if (fs.existsSync(localPkgPath)) {
-                const localPkg = JSON.parse(fs.readFileSync(localPkgPath, 'utf8'));
+            // Если данные пришли в формате base64, декодируем их в обычный текст (JSON)
+            if (apiData.content && apiData.encoding === 'base64') {
+                const decodedContent = Buffer.from(apiData.content, 'base64').toString('utf8');
+                const remotePkg = JSON.parse(decodedContent);
 
-                if (remotePkg.version !== localPkg.version) {
-                    if (win && !win.isDestroyed()) {
-                        win.webContents.send('update-available', remotePkg.version);
-                        updateNotified = true; // Устанавливаем флаг: предупреждение отправлено!
+                const localPkgPath = path.join(DirName, 'package.json');
+                if (fs.existsSync(localPkgPath)) {
+                    const localPkg = JSON.parse(fs.readFileSync(localPkgPath, 'utf8'));
+
+                    if (remotePkg.version !== localPkg.version) {
+                        if (win && !win.isDestroyed()) {
+                            win.webContents.send('update-available', remotePkg.version);
+                            updateNotified = true; // Фиксируем, что уведомили
+                        }
                     }
                 }
             }
@@ -444,7 +455,7 @@ function startUpdateChecker() {
             if (err.name === 'AbortError') {
                 console.log('Проверка обновлений: Превышено время ожидания сети.');
             } else {
-                console.log(`Проверка обновлений пропущена (нет связи с GitHub).`);
+                console.log(`Проверка обновлений пропущена (нет связи с GitHub): ${err.message}`);
             }
         }
     }, 5000); 
