@@ -407,29 +407,47 @@ function PlayNotification() {
 
 // Проверка обновлений каждые 30 секунд легковесным способом (через raw package.json на GitHub)
 function startUpdateChecker() {
+    let updateNotified = false; // Флаг, чтобы не спамить уведомлением каждые 5 секунд
+
     setInterval(async () => {
+        // Если уже уведомили пользователя, повторно не проверяем до перезапуска
+        if (updateNotified) return;
+
         try {
-            const response = await fetch('https://api.github.com/repos/Nothing-Byte228/TapoChat/contents/package.json');
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+            const timestamp = Date.now();
+            const updateUrl = `https://cdn.jsdelivr.net/gh/Nothing-Byte228/TapoChat@main/package.json?v=${timestamp}`;
+
+            const response = await fetch(updateUrl, {
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+
             if (!response.ok) return;
             const remotePkg = await response.json();
             
-            // Читаем локальный package.json
             const localPkgPath = path.join(DirName, 'package.json');
             if (fs.existsSync(localPkgPath)) {
                 const localPkg = JSON.parse(fs.readFileSync(localPkgPath, 'utf8'));
 
-                // Сравниваем версии (например, "1.0.0" vs "1.1.0")
                 if (remotePkg.version !== localPkg.version) {
                     if (win && !win.isDestroyed()) {
-                        // Отправляем сигнал в рендерер, что есть обновление
                         win.webContents.send('update-available', remotePkg.version);
+                        updateNotified = true; // Устанавливаем флаг: предупреждение отправлено!
                     }
                 }
             }
         } catch (err) {
-            console.log('Ошибка при проверке обновлений:', err);
+            if (err.name === 'AbortError') {
+                console.log('Проверка обновлений: Превышено время ожидания сети.');
+            } else {
+                console.log(`Проверка обновлений пропущена (нет связи с GitHub).`);
+            }
         }
-    }, 5000); // 5 секунд
+    }, 5000); 
 }
 
 // IPC-слушатель для запуска скрипта обновления из интерфейса
