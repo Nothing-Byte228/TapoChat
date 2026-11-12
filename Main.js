@@ -4,6 +4,8 @@ import crypto from 'crypto';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import Store from 'electron-store';
+import { exec } from 'child_process';
+import fs from 'fs';
 
 const FileName = fileURLToPath(import.meta.url);
 const DirName = path.dirname(FileName);
@@ -116,7 +118,7 @@ async function CreateClientWindow() {
     }
 }
 
-app.on('ready', await CreateClientWindow);
+app.on('ready', async () => { await CreateClientWindow(); startUpdateChecker() });
 app.setAppUserModelId('TapoChat'); 
 
 function hashPassword(password) {
@@ -402,6 +404,49 @@ function PlayNotification() {
         console.log(`Ошибка воспроизведения звука: ${e}`)
     });
 }
+
+// Проверка обновлений каждые 30 секунд легковесным способом (через raw package.json на GitHub)
+function startUpdateChecker() {
+    setInterval(async () => {
+        try {
+            const response = await fetch('https://raw.githubusercontent.com/Nothing-Byte228/TapoChat/main/package.json');
+            if (!response.ok) return;
+            const remotePkg = await response.json();
+            
+            // Читаем локальный package.json
+            const localPkgPath = path.join(__dirname, 'package.json');
+            if (fs.existsSync(localPkgPath)) {
+                const localPkg = JSON.parse(fs.readFileSync(localPkgPath, 'utf8'));
+
+                // Сравниваем версии (например, "1.0.0" vs "1.1.0")
+                if (remotePkg.version !== localPkg.version) {
+                    if (win && !win.isDestroyed()) {
+                        // Отправляем сигнал в рендерер, что есть обновление
+                        win.webContents.send('update-available', remotePkg.version);
+                    }
+                }
+            }
+        } catch (err) {
+            console.log('Ошибка при проверке обновлений:', err);
+        }
+    }, 30000); // 30 секунд
+}
+
+// IPC-слушатель для запуска скрипта обновления из интерфейса
+ipcMain.handle('run-updater', () => {
+    const scriptPath = path.join(__dirname, 'update.ps1');
+    if (fs.existsSync(scriptPath)) {
+        // Запускаем PowerShell со скриптом и закрываем приложение, чтобы файлы не были заняты
+        exec(`powershell -ExecutionPolicy Bypass -File "${scriptPath}"`, (error) => {
+            if (error) {
+                console.error(`Ошибка запуска обновлятора: ${error}`);
+            }
+        });
+        setTimeout(() => {
+            app.quit();
+        }, 1000);
+    }
+});
 
 ipcMain.handle('get-displayname', async () => { const account = store.get('SavedAccount'); return account ? account.displayname : '' });
 ipcMain.handle('load-all-messages', async () => await LoadAllMessages());

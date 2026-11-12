@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Smart Updater for TapoChat (No Git required)
     Downloads the latest repository state from GitHub and updates only changed files.

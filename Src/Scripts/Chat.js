@@ -191,4 +191,41 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.title = `(${unreadCount}) TapoChat`;
         }
     });
+
+    // --- СИСТЕМА ОБНОВЛЕНИЙ ---
+    // Создаем элемент баннера динамически или ищем готовый в HTML
+    let updateBanner = document.getElementById('update-banner');
+    if (!updateBanner) {
+        updateBanner = document.createElement('div');
+        updateBanner.id = 'update-banner';
+        updateBanner.innerHTML = `
+            <span>Доступна новая версия TapoChat!</span>
+            <button id="start-update-btn">Обновить</button>
+        `;
+        // Вставляем баннер сразу под шапку (#header)
+        const header = document.getElementById('header');
+        if (header) {
+            header.insertAdjacentElement('afterend', updateBanner);
+        }
+    }
+
+    // Слушаем сигнал от main.js о наличии обновления
+    window.System.OnUpdateAvailable?.((newVersion) => {
+        updateBanner.style.display = 'flex';
+
+        // Проигрываем специальный звук обновления
+        try {
+            const updateAudio = new Audio('../Assets/Sounds/Update_Available.mp3');
+            updateAudio.volume = 0.5;
+            updateAudio.play().catch((e) => console.log('Звук обновления заблокирован браузером:', e));
+        } catch (e) {
+            console.log('Ошибка воспроизведения звука обновления:', e);
+        }
+    });
+
+    // Обработка клика по кнопке обновления
+    document.getElementById('start-update-btn')?.addEventListener('click', async () => {
+        updateBanner.innerHTML = `<span>Скачивание и установка обновления...</span>`;
+        await window.System.RunUpdater();
+    });
 });

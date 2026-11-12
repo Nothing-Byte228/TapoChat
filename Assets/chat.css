@@ -204,3 +204,35 @@
 #msg-container::-webkit-scrollbar-thumb:hover {
     border: 5px solid #1e1e1e; /* При наведении рамка становится тоньше, а ползунок визуально толще */
 }
+
+/* Кнопка/баннер обновления в шапке */
+#update-banner {
+    display: none;
+    background-color: #836643;
+    color: white;
+    padding: 6px 12px;
+    font-size: 13px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #a38157;
+    animation: menuIn 0.2s ease forwards;
+    cursor: pointer;
+}
+
+#update-banner:hover {
+    background-color: #94744d;
+}
+
+#update-banner button {
+    background: #1e1e1e;
+    border: none;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#update-banner button:hover {
+    background: #2d2d2d;
+}

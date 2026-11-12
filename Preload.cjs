@@ -9,5 +9,7 @@ contextBridge.exposeInMainWorld('System', {
     QueryLogout: () => ipcRenderer.invoke('query-logout'),
     OnNewMessage: (callback) => ipcRenderer.on('new-message-received', (event, msg) => callback(msg)),
     GetDisplayname: () => ipcRenderer.invoke('get-displayname'),
-    PlayNotification: () => ipcRenderer.invoke('play-notification')
+    PlayNotification: () => ipcRenderer.invoke('play-notification'),
+    OnUpdateAvailable: (callback) => ipcRenderer.on('update-available', (event, version) => callback(version)),
+    RunUpdater: () => ipcRenderer.invoke('run-updater')
 })
