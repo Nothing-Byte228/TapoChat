@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../Assets/style.css">
+    <title>Вход в TapoChat</title>
+    <style>
+        * {
+            font-family: 'Google Sans';
+        }
+
+        @keyframes appear-pc {
+            0% { transform: translateX(-80px); filter: blur(10px); opacity: 0; }
+            100% { transform: translateX(0px); opacity: 1; }
+        }
+
+        @keyframes appear-tablet {
+            0% { transform: translateY(40px); filter: blur(10px); opacity: 0; }
+            100% { transform: translateX(0px); opacity: 1; }
+        }
+
+        @keyframes appear {
+            0% { transform: scale(90%); filter: blur(10px); opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        body {
+            font-family: 'Google Sans';
+            background: url(../Assets/images/login-image.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        @media (max-width: 600px) {
+            .modal {
+                width: 100%;
+                margin: 5%;
+                /* animation: appear 0.5s; */
+            }
+        }
+
+        /* @media (min-width: 600px) {
+            .modal {
+                
+            }
+        } */
+
+        @media (min-width: 1200px) {
+            .modal-frame {
+                justify-content: flex-start;
+            }
+            .modal {
+                margin-left: 5%;
+                align-items: flex-start;
+                /* animation: appear-pc 0.5s; */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-frame">
+        <div class="modal" id="login" style="display: flex;">
+            <div style="display: flex; flex-direction: row; align-items: center; gap: 12px; width: 100%;">
+                <h2>TapoChat</h2>
+                <button class="rounded" style="margin-left: auto;" id="btn-create-acc">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-plus-icon lucide-user-plus"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+                </button>
+            </div>
+            <div style="display: flex; flex-direction: column; width: 100%; gap: 8px;">
+                <p style="color: gray;">Логин</p>
+                <input type="text" id="login-username">
+            </div>
+            <div style="display: flex; flex-direction: column; width: 100%; gap: 8px;">
+                <p style="color: gray;">Пароль</p>
+                <input type="password" id="login-password">
+            </div>
+            <br>
+            <button class="accent" style="width: 100%;" onclick="System.QueryLogin(document.getElementById('login-username').value, document.getElementById('login-password').value)">Войти</button>
+        </div>
+        <div class="modal" id="auth" style="display: none;">
+            <div style="display: flex; flex-direction: row; align-items: center; gap: 12px; width: 100%;">
+                <button class="rounded" id="btn-login-acc">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-icon lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                </button>
+                <h2>Создать аккаунт</h2>
+            </div>
+            <div style="display: flex; flex-direction: column; width: 100%; gap: 8px;">
+                <p style="color: gray;">Логин</p>
+                <input type="text" id="reg-username">
+            </div>
+            <div style="display: flex; flex-direction: column; width: 100%; gap: 8px;">
+                <p style="color: gray;">Отображаемое имя</p>
+                <input type="text" id="reg-displayname">
+            </div>
+            <div style="display: flex; flex-direction: column; width: 100%; gap: 8px;">
+                <p style="color: gray;">Пароль</p>
+                <input type="password" id="reg-password">
+            </div>
+            <br>
+            <button class="accent" style="width: 100%;" onclick="System.QueryRegister(document.getElementById('reg-username').value, document.getElementById('reg-displayname').value, document.getElementById('reg-password').value)">Создать аккаунт</button>
+        </div>
+        <div>
+
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const auth = document.getElementById('auth');
+            const login = document.getElementById('login');
+
+            document.getElementById('btn-create-acc').addEventListener('click', () => {
+                login.style.display = 'none';
+                auth.style.display = 'flex';
+            });
+            document.getElementById('btn-login-acc').addEventListener('click', () => {
+                login.style.display = 'flex';
+                auth.style.display = 'none';
+            });
+        })
+
+        function PlayNotification() {
+            const audio = new Audio('../Assets/Sounds/notification.mp3');
+            audio.volume = 0.4;
+            audio.play().catch((e) => {
+                console.log(`Ошибка воспроизведения звука: ${e}`)
+            });
+        }
+    </script>
+</body>
+</html>

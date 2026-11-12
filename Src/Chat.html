@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TapoChat</title>
+    <link rel="stylesheet" href="../Assets/style.css">
+    <link rel="stylesheet" href="../Assets/chat.css">
+</head>
+<body style="display: flex; flex-direction: column; width: 100vw; height: 100vh; overflow: hidden;">
+    <div id="header">
+        <h3>Общий чат</h3>
+    </div>
+    
+    <!-- Контейнер сообщений -->
+    <div style="display: flex; flex-direction: column; padding: 12px; gap: 12px; height: 100%; overflow: auto;" id="msg-container">
+        <!-- История подгружается автоматически скриптом ниже -->
+    </div>
+
+    <!-- Футер с полем ввода и кнопками -->
+    <div id="footer" style="display: flex; flex-direction: column; align-items: stretch; padding: 8px 12px 12px 12px;">
+        
+        <!-- Плашка предпросмотра ответа (изначально скрыта) -->
+        <div id="reply-preview-container">
+            <div>
+                <span id="reply-preview-author" style="font-weight: bold; color: #d4a373;"></span>
+                <p id="reply-preview-text" style="margin: 2px 0 0 0; color: #ccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 500px;"></p>
+            </div>
+            <button id="cancel-reply-btn" title="Отменить ответ">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x preview-icon"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+        </div>
+
+        <div style="display: flex; flex-direction: row; align-items: flex-end; gap: 12px; width: 100%;">
+            <button class="rounded">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            </button>
+            
+            <textarea id="message-input" oninput="autoResizeTextArea(this)" placeholder="Введите сообщение..."></textarea>
+            
+            <button id="send-btn" class="rounded">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send-horizontal-icon lucide-send-horizontal"><path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"/><path d="M6 12h16"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <script src="Scripts/Chat.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => { 
+            const container = document.getElementById('msg-container');
+            container.insertAdjacentHTML('beforeend', await window.System.LoadAllMessages());
+            container.scrollTop = container.scrollHeight;
+        })
+    </script>
+</body>
+</html>

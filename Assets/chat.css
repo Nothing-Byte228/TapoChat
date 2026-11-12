@@ -1,0 +1,158 @@
+#header {
+    background-color: #1e1e1e;
+    border-bottom: 1px solid #2d2d2d;
+    color: white;
+    padding: 12px;
+}
+
+#footer {
+    background-color: #1e1e1e;
+    border-top: 1px solid #2d2d2d;
+    color: white;
+    padding: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.msg-my {
+    color: white;
+    padding: 12px;
+    background-color: #836643;
+    width: fit-content;
+    min-width: 100px;
+    max-width: 65%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-left: auto;
+    border: 1px solid #a38157;
+    border-radius: 16px 4px 16px 16px;
+}
+
+.msg-other {
+    color: white;
+    padding: 12px;
+    background-color: #1e1e1e;
+    width: fit-content;
+    min-width: 100px;
+    max-width: 65%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-right: auto;
+    border: 1px solid #2d2d2d;
+    border-radius: 4px 16px 16px 16px;
+}
+
+/* Стили для текста и времени внутри сообщений */
+.msg-my, .msg-other {
+    position: relative;
+    cursor: pointer;
+
+    p {
+        white-space: pre-wrap; /* Сохраняет абзацы и \n */
+        word-break: break-word; /* Переносит длинные слова */
+    }
+    
+    span {
+        font-size: 9pt;
+        opacity: 0.5;
+        align-self: flex-end;
+        margin-top: -2px;
+    }
+}
+
+.msg-reply {
+    overflow: hidden;
+    color: white;
+    padding: 8px;
+    background-color: #4e4e4e50;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-left: 4px solid #ffffff;
+    border-radius: 8px;
+
+    p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+    }
+}
+
+.context-menu {
+    position: absolute;
+    background-color: #2b2b2b;
+    border: 1px solid #3d3d3d;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    min-width: 150px;
+    padding: 4px;
+    font-family: 'Google Sans';
+}
+
+.context-menu button {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 8px;
+    text-align: left;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Google Sans';
+    transition: 
+        padding 0.5s cubic-bezier(0.075, 0.82, 0.165, 1), 
+        background 0.1s ease;
+}
+
+.context-menu button:hover {
+    background-color: #3d3d3d;
+    padding: 8px 8px 8px 12px;
+    transition:
+        padding 0.5s cubic-bezier(0.075, 0.82, 0.165, 1),
+        background 0.1s ease;
+}
+
+.context-menu button:active {
+    background-color: #836643;
+    padding: 8px;
+    transition:
+        padding 0.5s cubic-bezier(0.075, 0.82, 0.165, 1),
+        background 0.1s ease;
+}
+
+/* Блок отображения текущего ответа над полем ввода */
+#reply-preview-container {
+    display: none;
+    background-color: #252525;
+    border-left: 4px solid #836643;
+    padding: 6px 12px;
+    /* margin: 0 12px 6px 12px; */
+    border-radius: 8px;
+    font-size: 12px;
+    color: white;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Google Sans';
+}
+
+#reply-preview-container button {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 24px;
+}
+#reply-preview-container button:hover {
+    color: white;
+}

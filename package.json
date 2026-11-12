@@ -1,0 +1,19 @@
+{
+  "name": "tapochat",
+  "version": "1.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "author": "Salt Systems",
+  "type": "module",
+  "main": "Main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.3",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.4.2",
+    "electron": "^43.4.0",
+    "electron-store": "^11.0.2"
+  }
+}
