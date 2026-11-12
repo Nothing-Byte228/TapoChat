@@ -97,7 +97,6 @@ finally {
 }
 
 Write-Host "Обновление успешно установлено! Перезапуск TapoChat..." -ForegroundColor Green
-Start-Sleep -Seconds 3 # Небольшая пауза, чтобы файлы точно записались на диск
 
 # Запуск npm run start без появления консольного окна
 Start-Process "npm.cmd" -ArgumentList "run", "start" -WorkingDirectory $PSScriptRoot -WindowStyle Hidden
