@@ -96,5 +96,10 @@ finally {
     }
 }
 
-Write-Host "Нажмите любую клавишу для выхода..."
-$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+Write-Host "Обновление успешно установлено! Перезапуск TapoChat..." -ForegroundColor Green
+Start-Sleep -Seconds 3 # Небольшая пауза, чтобы файлы точно записались на диск
+
+# Запускаем приложение заново из папки проекта
+Start-Process "cmd.exe" -ArgumentList "/c npm run start" -WorkingDirectory $PSScriptRoot
+
+Exit

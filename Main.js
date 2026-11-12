@@ -409,12 +409,12 @@ function PlayNotification() {
 function startUpdateChecker() {
     setInterval(async () => {
         try {
-            const response = await fetch('https://raw.githubusercontent.com/Nothing-Byte228/TapoChat/main/package.json');
+            const response = await fetch('https://api.github.com/repos/Nothing-Byte228/TapoChat/contents/package.json');
             if (!response.ok) return;
             const remotePkg = await response.json();
             
             // Читаем локальный package.json
-            const localPkgPath = path.join(__dirname, 'package.json');
+            const localPkgPath = path.join(DirName, 'package.json');
             if (fs.existsSync(localPkgPath)) {
                 const localPkg = JSON.parse(fs.readFileSync(localPkgPath, 'utf8'));
 
@@ -429,12 +429,12 @@ function startUpdateChecker() {
         } catch (err) {
             console.log('Ошибка при проверке обновлений:', err);
         }
-    }, 30000); // 30 секунд
+    }, 5000); // 5 секунд
 }
 
 // IPC-слушатель для запуска скрипта обновления из интерфейса
 ipcMain.handle('run-updater', () => {
-    const scriptPath = path.join(__dirname, 'update.ps1');
+    const scriptPath = path.join(DirName, 'update.ps1');
     if (fs.existsSync(scriptPath)) {
         // Запускаем PowerShell со скриптом и закрываем приложение, чтобы файлы не были заняты
         exec(`powershell -ExecutionPolicy Bypass -File "${scriptPath}"`, (error) => {
