@@ -83,13 +83,26 @@ messageInput.addEventListener('input', () => {
     messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
 });
 
+// Функция воспроизведения звука (проверьте, чтобы путь к mp3 был правильным относительно Src/Chat.js)
+function PlayNotification() {
+    try {
+        const audio = new Audio('../Assets/Sounds/Notification.mp3');
+        audio.volume = 0.4;
+        audio.play().catch((e) => {
+            console.log(`Ошибка воспроизведения звука: ${e}`);
+        });
+    } catch (err) {
+        console.log(`Не удалось запустить звук: ${err}`);
+    }
+}
+
 // Получение новых сообщений в реальном времени
 window.System.OnNewMessage((msg) => {
-    // Игнорируем свои сообщения, так как они уже добавлены при отправке
+    // Игнорируем свои сообщения
     if (msg.author === currentDisplayname) return;
 
-    // Проигрываем звук уведомления
-    window.System.PlayNotification();
+    // 🔊 ВОТ ЗДЕСЬ ОБЯЗАТЕЛЬНО ДОЛЖЕН БЫТЬ ВЫЗОВ ЗВУКА:
+    PlayNotification();
 
     // Проверяем, нет ли уже такого сообщения в DOM
     if (document.querySelector(`[data-uuid="${msg.uuid}"]`)) return;
