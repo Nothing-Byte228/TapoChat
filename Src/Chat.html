@@ -4,53 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TapoChat</title>
-    <link rel="stylesheet" href="../Assets/style.css">
     <link rel="stylesheet" href="../Assets/chat.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #141414;
+            color: white;
+            font-family: 'Google Sans', 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+        #header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #header h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        #logout-btn {
+            background-color: #2b2b2b;
+            border: 1px solid #3d3d3d;
+            color: #ff6b6b;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            transition: background 0.15s;
+        }
+        #logout-btn:hover {
+            background-color: #3d3d3d;
+        }
+        #msg-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #bottom-area {
+            display: flex;
+            flex-direction: column;
+            background-color: #1e1e1e;
+        }
+        #message-input {
+            flex: 1;
+            background-color: #2b2b2b;
+            border: 1px solid #3d3d3d;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            max-height: 120px;
+            outline: none;
+        }
+        #message-input:focus {
+            border-color: #836643;
+        }
+        #send-btn {
+            background-color: #836643;
+            border: 1px solid #a38157;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.15s;
+        }
+        #send-btn:hover {
+            background-color: #94744d;
+        }
+    </style>
 </head>
-<body style="display: flex; flex-direction: column; width: 100vw; height: 100vh; overflow: hidden;">
+<body>
+
+    <!-- Шапка чата -->
     <div id="header">
-        <h3>Общий чат</h3>
+        <div>
+            <h3>TapoChat</h3>
+            <span id="current-user-label" style="font-size: 12px; opacity: 0.6;">Загрузка...</span>
+        </div>
+        <button id="logout-btn">Выйти</button>
     </div>
-    
+
+    <!-- Баннер уведомления об обновлении -->
+    <div id="update-banner">
+        <span id="update-banner-text">Доступна новая версия TapoChat!</span>
+        <button id="btn-start-update">Обновить</button>
+    </div>
+
+    <!-- Прогресс-бар загрузки обновления в стиле Windows 11 -->
+    <div id="update-progress-container">
+        <div class="update-progress-info">
+            <span id="update-status-text">Подготовка к обновлению...</span>
+            <span id="update-percent-text">0%</span>
+        </div>
+        <div class="win11-progressbar" id="update-pb">
+            <div class="win11-progress-fill" id="update-pb-fill"></div>
+        </div>
+    </div>
+
     <!-- Контейнер сообщений -->
-    <div style="display: flex; flex-direction: column; padding: 12px; gap: 12px; height: 100%; overflow: auto;" id="msg-container">
-        <!-- История подгружается автоматически скриптом ниже -->
-    </div>
+    <div id="msg-container"></div>
 
-    <!-- Футер с полем ввода и кнопками -->
-    <div id="footer" style="display: flex; flex-direction: column; align-items: stretch; padding: 8px 12px 12px 12px;">
-        
-        <!-- Плашка предпросмотра ответа (изначально скрыта) -->
-        <div id="reply-preview-container">
-            <div>
-                <span id="reply-preview-author" style="font-weight: bold; color: #d4a373;"></span>
-                <p id="reply-preview-text" style="margin: 2px 0 0 0; color: #ccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 500px;"></p>
+    <!-- Нижняя панель с превью ответа и полем ввода -->
+    <div id="bottom-area">
+        <div id="reply-preview-container" style="margin: 8px 12px 0 12px;">
+            <div style="overflow: hidden;">
+                <strong id="reply-preview-author" style="color: #a38157; font-size: 12px;"></strong>
+                <p id="reply-preview-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.8;"></p>
             </div>
-            <button id="cancel-reply-btn" title="Отменить ответ">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x preview-icon"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
+            <button id="cancel-reply-btn" title="Отменить ответ">&times;</button>
         </div>
 
-        <div style="display: flex; flex-direction: row; align-items: flex-end; gap: 12px; width: 100%;">
-            <button class="rounded">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-            </button>
-            
-            <textarea id="message-input" oninput="autoResizeTextArea(this)" placeholder="Введите сообщение..."></textarea>
-            
-            <button id="send-btn" class="rounded">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send-horizontal-icon lucide-send-horizontal"><path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"/><path d="M6 12h16"/></svg>
-            </button>
+        <div id="footer">
+            <textarea id="message-input" rows="1" placeholder="Написать сообщение..."></textarea>
+            <button id="send-btn">Отправить</button>
         </div>
     </div>
 
-    <script src="Scripts/Chat.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => { 
-            const container = document.getElementById('msg-container');
-            container.insertAdjacentHTML('beforeend', await window.System.LoadAllMessages());
-            container.scrollTop = container.scrollHeight;
-        })
-    </script>
+    <script src="./Scripts/Chat.js"></script>
 </body>
 </html>
