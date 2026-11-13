@@ -14,11 +14,27 @@ $TargetDir = $PSScriptRoot
 
 Write-Host "[*] Подготовка к обновлению TapoChat..." -ForegroundColor Cyan
 
-# 1. Очистка временной папки на случай прошлых запусков
+# 0. Принудительно сбрасываем блокировки файлов, если папка занята
 if (Test-Path $TempDir) {
-    Remove-Item $TempDir -Recurse -Force
+    try {
+        # Снимаем атрибуты «только чтение» со всех файлов во временной папке
+        Get-ChildItem -Path $TempDir -Recurse -Force | ForEach-Object { $_.Attributes = 'Normal' }
+        Remove-Item $TempDir -Recurse -Force -ErrorAction Stop
+    } catch {
+        Write-Host "[!] Внимание: Часть временных файлов занята, пробуем очистить принудительно..." -ForegroundColor Yellow
+        # Если файлы всё еще заблокированы системой, создаем уникальную временную папку с таймстампом
+        $TempDir = Join-Path $env:TEMP ("TapoChat_Update_Temp_" + [System.Guid]::NewGuid().ToString())
+        $ZipPath = Join-Path $TempDir "repo.zip"
+        $ExtractPath = Join-Path $TempDir "extracted"
+    }
 }
-New-Item -ItemType Directory -Path $ExtractPath | Out-Null
+
+if (!(Test-Path $TempDir)) {
+    New-Item -ItemType Directory -Path $TempDir -Force | Out-Null
+}
+if (!(Test-Path $ExtractPath)) {
+    New-Item -ItemType Directory -Path $ExtractPath -Force | Out-Null
+}
 
 try {
     # 2. Скачивание ZIP-архива с GitHub
