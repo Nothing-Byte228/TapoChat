@@ -11,5 +11,7 @@ contextBridge.exposeInMainWorld('System', {
     GetDisplayname: () => ipcRenderer.invoke('get-displayname'),
     PlayNotification: () => ipcRenderer.invoke('play-notification'),
     OnUpdateAvailable: (callback) => ipcRenderer.on('update-available', (event, version) => callback(version)),
-    RunUpdater: () => ipcRenderer.invoke('run-updater')
+    RunUpdater: () => ipcRenderer.invoke('run-updater'),
+    DeleteMessage: (uuid) => ipcRenderer.invoke('delete-message', uuid),
+    OnMessageDeleted: (callback) => ipcRenderer.on('message-deleted', (event, uuid) => callback(uuid)),
 })

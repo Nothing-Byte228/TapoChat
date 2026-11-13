@@ -55,6 +55,13 @@ function EnableMessages() {
                 }
             }
         })
+        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'messages' }, (payload) => {
+            // Когда кто-то удаляет сообщение, шлем сигнал в интерфейс
+            const deletedUuid = payload.old.uuid;
+            if (win && !win.isDestroyed()) {
+                win.webContents.send('message-deleted', deletedUuid);
+            }
+        })
         .subscribe();
 }
 
@@ -460,6 +467,40 @@ function startUpdateChecker() {
         }
     }, 5000); 
 }
+
+// Функция удаления сообщения из базы данных
+async function DeleteMessage(messageUuid, userDisplayname) {
+    try {
+        // Проверяем, действительно ли это сообщение принадлежит пользователю, чтобы никто чужое не удалил
+        const { data: msg, error: fetchError } = await supabase
+            .from('messages')
+            .select('author')
+            .eq('uuid', messageUuid)
+            .single();
+
+        if (fetchError || !msg || msg.author !== userDisplayname) {
+            return { success: false, error: 'Нет прав на удаление этого сообщения' };
+        }
+
+        const { error } = await supabase
+            .from('messages')
+            .delete()
+            .eq('uuid', messageUuid);
+
+        if (error) throw error;
+        return { success: true };
+    } catch (err) {
+        console.error('Ошибка удаления сообщения:', err.message);
+        return { success: false, error: err.message };
+    }
+}
+
+// Регистрируем IPC-обработчик для удаления
+ipcMain.handle('delete-message', async (event, messageUuid) => {
+    const account = store.get('SavedAccount');
+    if (!account) return { success: false, error: 'Не авторизован' };
+    return await DeleteMessage(messageUuid, account.displayname);
+});
 
 // IPC-слушатель для запуска скрипта обновления из интерфейса
 ipcMain.handle('run-updater', () => {

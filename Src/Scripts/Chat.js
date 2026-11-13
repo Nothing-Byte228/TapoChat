@@ -135,7 +135,6 @@ window.System.OnNewMessage((msg) => {
     scrollToBottom();
 });
 
-// Контекстное меню для ответа и копирования
 msgContainer.addEventListener('contextmenu', (e) => {
     const msgEl = e.target.closest('.msg-my, .msg-other');
     if (!msgEl) return;
@@ -150,24 +149,47 @@ msgContainer.addEventListener('contextmenu', (e) => {
     const menu = document.createElement('div');
     menu.className = 'context-menu';
     menu.style.left = `${Math.min(e.pageX, window.innerWidth - 170)}px`;
-    menu.style.top = `${Math.min(e.pageY, window.innerHeight - 100)}px`;
+    menu.style.top = `${Math.min(e.pageY, window.innerHeight - 120)}px`;
 
+    // Кнопка «Ответить»
     const replyOption = document.createElement('button');
     replyOption.textContent = 'Ответить';
     replyOption.onclick = () => {
         setReply(uuid, author, text);
         removeExistingContextMenus();
     };
+    menu.appendChild(replyOption);
 
+    // Кнопка «Копировать текст»
     const copyOption = document.createElement('button');
     copyOption.textContent = 'Копировать текст';
     copyOption.onclick = () => {
         navigator.clipboard.writeText(text);
         removeExistingContextMenus();
     };
-
-    menu.appendChild(replyOption);
     menu.appendChild(copyOption);
+
+    // 🗑️ Кнопка «Удалить» доступна ТОЛЬКО для своих сообщений
+    if (author === currentDisplayname) {
+        const deleteOption = document.createElement('button');
+        deleteOption.textContent = 'Удалить';
+        deleteOption.style.color = '#ff6b6b'; // Красный акцент для удаления
+        deleteOption.onclick = async () => {
+            removeExistingContextMenus();
+            const result = await window.System.DeleteMessage(uuid);
+            if (result.success) {
+                // Удаляем локально сразу, не дожидаясь веб-сокета
+                msgEl.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+                msgEl.style.opacity = '0';
+                msgEl.style.transform = 'scale(0.95)';
+                setTimeout(() => msgEl.remove(), 200);
+            } else {
+                console.log('Не удалось удалить сообщение:', result.error);
+            }
+        };
+        menu.appendChild(deleteOption);
+    }
+
     document.body.appendChild(menu);
 });
 
@@ -249,5 +271,16 @@ btnStartUpdate.addEventListener('click', async () => {
         clearInterval(timer);
         statusText.textContent = 'Ошибка при запуске обновления';
         console.error(err);
+    }
+});
+
+// Слушаем удаление сообщений от других пользователей / себя
+window.System.OnMessageDeleted((uuid) => {
+    const msgEl = document.querySelector(`[data-uuid="${uuid}"]`);
+    if (msgEl) {
+        msgEl.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+        msgEl.style.opacity = '0';
+        msgEl.style.transform = 'scale(0.95)';
+        setTimeout(() => msgEl.remove(), 200);
     }
 });
