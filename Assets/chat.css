@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap');
 
 @keyframes menuIn {
     from {
@@ -24,14 +24,15 @@
 
 #header {
     background-color: #1e1e1e;
-    border-bottom: 1px solid #2d2d2d;
+    /* border-bottom: 1px solid #2d2d2d; */
+    /* border-radius: 0 0 12px 12px; */
     color: white;
     padding: 12px;
 }
 
 #footer {
     background-color: #1e1e1e;
-    border-top: 1px solid #2d2d2d;
+    /* border-top: 1px solid #2d2d2d; */
     color: white;
     padding: 12px;
     display: flex;
@@ -42,7 +43,7 @@
 
 .msg-my {
     color: white;
-    padding: 12px;
+    padding: 14px;
     background-color: #836643;
     width: fit-content;
     min-width: 100px;
@@ -51,13 +52,13 @@
     flex-direction: column;
     gap: 6px;
     margin-left: auto;
-    border: 1px solid #a38157;
-    border-radius: 16px 4px 16px 16px;
+    /* border: 1px solid #a38157; */
+    border-radius: 16px 0 16px 16px;
 }
 
 .msg-other {
     color: white;
-    padding: 12px;
+    padding: 14px;
     background-color: #1e1e1e;
     width: fit-content;
     min-width: 100px;
@@ -66,8 +67,8 @@
     flex-direction: column;
     gap: 6px;
     margin-right: auto;
-    border: 1px solid #2d2d2d;
-    border-radius: 4px 16px 16px 16px;
+    /* border: 1px solid #2d2d2d; */
+    border-radius: 0px 16px 16px 16px;
 }
 
 /* Стили для текста и времени внутри сообщений */
@@ -91,13 +92,13 @@
 .msg-reply {
     overflow: hidden;
     color: white;
-    padding: 8px;
-    background-color: #4e4e4e50;
+    padding: 10px;
+    background-color: color-mix(in srgb, #4e4e4e 20%, black 10%);
     display: flex;
     flex-direction: column;
     gap: 6px;
-    border-left: 4px solid #ffffff;
-    border-radius: 8px;
+    /* border-left: 4px solid #ffffff; */
+    border-radius: 12px;
 
     p {
         white-space: nowrap;
@@ -119,7 +120,7 @@
     flex-direction: column;
     min-width: 150px;
     padding: 4px;
-    font-family: 'Google Sans';
+    font-family: 'Inter';
     transform-origin: top left; /* Чтобы масштабирование при появлении шло от точки клика */
     animation: menuIn 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -140,7 +141,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-family: 'Google Sans';
+    font-family: 'Inter';
     transition: 
         padding 0.5s cubic-bezier(0.075, 0.82, 0.165, 1), 
         background 0.1s ease;
@@ -174,7 +175,7 @@
     color: white;
     justify-content: space-between;
     align-items: center;
-    font-family: 'Google Sans';
+    font-family: 'Inter';
 }
 
 #reply-preview-container button {
@@ -188,52 +189,58 @@
     color: white;
 }
 
-#msg-container::-webkit-scrollbar {
-    width: 16px;
+*::-webkit-scrollbar {
+    width: 4px;
 }
 
-#msg-container::-webkit-scrollbar-track {
-    background: #1e1e1e;
+*::-webkit-scrollbar-track {
+    /* background: #1e1e1e; */
+    background: transparent;
 }
 
-#msg-container::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
     background: #836643;
     border-radius: 8px;
-    border: 7px solid #1e1e1e; /* Создает отступы вокруг ползунка, делая его тоньше */
+    border: 7px solid transparent; /* Создает отступы вокруг ползунка, делая его тоньше */
 }
 
 /* Отдельный селектор для наведения в чистом CSS */
-#msg-container::-webkit-scrollbar-thumb:hover {
-    border: 5px solid #1e1e1e; /* При наведении рамка становится тоньше, а ползунок визуально толще */
+
+textarea::-webkit-scrollbar {
+    display: none;
 }
 
 /* Кнопка/баннер обновления в шапке */
 #update-banner {
-    display: none;
+    /* display: none; */
+    display: flex;
     background-color: #836643;
     color: white;
-    padding: 8px;
+    padding: 8px 8px 8px 14px;
+    margin: 8px;
     font-size: 13px;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #a38157;
+    /* border-bottom: 1px solid #a38157; */
+    border-radius: 14px;
     animation: menuIn 0.2s ease forwards;
     cursor: pointer;
 }
 
-#update-banner:hover {
+/* #update-banner:hover {
     background-color: #94744d;
-}
+} */
 
 #update-banner button {
     background: #1e1e1e;
     border: none;
     color: white;
-    padding: 4px 10px;
-    border-radius: 4px;
+    padding: 6px 12px;
+    border-radius: 8px;
     cursor: pointer;
-    font-weight: bold;
-    font-family: 'Google Sans';
+    font-size: 13px;
+    font-weight: 400;
+    font-family: 'Inter';
 }
 
 #update-banner button:hover {
@@ -248,7 +255,7 @@
     padding: 10px 12px;
     background-color: #252525;
     border-top: 1px solid #2d2d2d;
-    font-family: 'Google Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     color: white;
     font-size: 13px;
     animation: menuIn 0.2s ease forwards;

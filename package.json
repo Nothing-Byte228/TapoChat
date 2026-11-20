@@ -1,6 +1,6 @@
 {
   "name": "tapochat",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "",
   "license": "Apache-2.0",
   "author": "Nothing-Byte228",
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.3",
+    "@tabler/icons-webfont": "^3.52.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.4.2",
     "electron": "^43.4.0",

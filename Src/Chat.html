@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TapoChat</title>
     <link rel="stylesheet" href="../Assets/chat.css">
+    <link rel="stylesheet" href="../node_modules/@tabler/icons-webfont/dist/tabler-icons.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -14,7 +15,7 @@
         body {
             background-color: #141414;
             color: white;
-            font-family: 'Google Sans', 'Segoe UI', sans-serif;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
             display: flex;
             flex-direction: column;
             height: 100vh;
@@ -32,14 +33,15 @@
         }
         #logout-btn {
             background-color: #2b2b2b;
-            border: 1px solid #3d3d3d;
+            /* border: 1px solid #3d3d3d; */
+            border: 1px solid transparent;
             color: #ff6b6b;
             padding: 6px 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-family: inherit;
             font-size: 12px;
-            transition: background 0.15s;
+            /* transition: background 0.15s; */
         }
         #logout-btn:hover {
             background-color: #3d3d3d;
@@ -60,7 +62,8 @@
         #message-input {
             flex: 1;
             background-color: #2b2b2b;
-            border: 1px solid #3d3d3d;
+            /* border: 1px solid #3d3d3d; */
+            border: 1px solid transparent;
             color: white;
             padding: 10px 14px;
             border-radius: 8px;
@@ -69,20 +72,23 @@
             resize: none;
             max-height: 120px;
             outline: none;
+
+            scrollbar-track-color: #00000000;
         }
         #message-input:focus {
-            border-color: #836643;
+            /* border-color: #836643; */
         }
         #send-btn {
             background-color: #836643;
-            border: 1px solid #a38157;
+            /* border: 1px solid #a38157; */
+            border: 1px solid transparent;
             color: white;
-            padding: 10px 18px;
+            padding: 8px 10px;
             border-radius: 8px;
             cursor: pointer;
             font-family: inherit;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 16px;
             transition: background 0.15s;
         }
         #send-btn:hover {
@@ -98,7 +104,10 @@
             <h3>TapoChat</h3>
             <span id="current-user-label" style="font-size: 12px; opacity: 0.6;">Загрузка...</span>
         </div>
-        <button id="logout-btn">Выйти</button>
+        <button id="logout-btn">
+            <i class="ti ti-logout"></i>
+            Выйти
+        </button>
     </div>
 
     <!-- Баннер уведомления об обновлении -->
@@ -133,7 +142,9 @@
 
         <div id="footer">
             <textarea id="message-input" rows="1" placeholder="Написать сообщение..."></textarea>
-            <button id="send-btn">Отправить</button>
+            <button id="send-btn">
+                <i class="ti ti-send-2"></i>
+            </button>
         </div>
     </div>
 

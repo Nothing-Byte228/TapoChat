@@ -115,8 +115,11 @@ window.System.OnNewMessage((msg) => {
             const rText = targetMsgEl.querySelector('p')?.textContent || '';
             replyHtml = `
                 <div class="msg-reply">
-                    <h5>${rAuthor}</h5>
-                    <p style="color: #ffffffcc; font-size: 10pt;">${rText}</p>
+                    <i class="ti ti-corner-up-left"></i>
+                    <div>
+                        <h5>${rAuthor}</h5>
+                        <p style="color: #ffffffcc; font-size: 10pt;">${rText}</p>
+                    </div>
                 </div>
             `;
         }
