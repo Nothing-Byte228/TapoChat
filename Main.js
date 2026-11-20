@@ -524,4 +524,3 @@ ipcMain.handle('query-register', async (event, username, displayname, password) 
 ipcMain.handle('query-login', async (event, username, password) => await QueryLogin(username, password));
 ipcMain.handle('query-logout', () => QueryLogout());
 ipcMain.handle('send-message', async (event, text, replyUuid) => await SendMessage(text, replyUuid));
-ipcMain.handle('play-notification', () => PlayNotification())

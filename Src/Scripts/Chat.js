@@ -86,8 +86,8 @@ messageInput.addEventListener('input', () => {
 // Функция воспроизведения звука (проверьте, чтобы путь к mp3 был правильным относительно Src/Chat.js)
 function PlayNotification() {
     try {
-        const audio = new Audio('../Assets/Sounds/Notification.mp3');
-        audio.volume = 0.4;
+        const audio = new Audio('../../Assets/Sounds/Notification.mp3');
+        audio.volume = 1;
         audio.play().catch((e) => {
             console.log(`Ошибка воспроизведения звука: ${e}`);
         });
